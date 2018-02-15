@@ -1,5 +1,5 @@
 #include "dz60.h"
-#include "pointing_device.h"
+#include "mousekey.h"
 
 #define MODS_CTRL_MASK  (MOD_BIT(KC_LSHIFT)|MOD_BIT(KC_RSHIFT))
 
@@ -19,31 +19,32 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 
   KEYMAP(_______, _______,    _______,    _______,     _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
-         _______, _______,    F(1),       _______,     _______, _______, _______, _______, _______, _______, KC_UP, _______, _______, _______,
-         KC_LCTL, KC_MS_LEFT, KC_MS_DOWN, KC_MS_RIGHT, KC_RIGHT, _______, _______, _______, _______, _______, _______, _______, _______,
-         KC_LSPO, _______,    _______,    _______,     _______, _______, KC_LEFT, KC_DOWN, _______, _______, _______, _______, KC_RSPC, _______, _______,
+         _______, _______,    KC_MS_UP,   _______,     _______, _______, _______, _______, _______, _______, KC_UP, _______, _______, _______,
+         KC_LCTL, KC_MS_LEFT, KC_MS_DOWN, KC_MS_RIGHT, KC_RIGHT, _______, _______, KC_MS_BTN1, KC_MS_BTN2, _______, _______, _______, _______,
+         KC_LSPO, _______,    F(1),       _______,     _______, _______, KC_LEFT, KC_DOWN, _______, _______, _______, _______, KC_RSPC, _______, _______,
          _______, _______,    _______,    _______,     _______, _______, _______, _______, _______, _______, _______),
 
 	KEYMAP(KC_GRV, KC_F1, KC_F2, KC_F3, KC_F4, KC_F5, KC_F6, KC_F7, KC_F8, KC_F9, KC_F10, KC_F11, KC_F12, _______, KC_DEL,
-         _______, RGB_TOG, RGB_MOD, RGB_HUI, RGB_HUD, RGB_SAI, RGB_SAD, RGB_VAI, RGB_VAD, _______, _______, _______, _______, RESET,
+         _______, RGB_TOG, RGB_MOD, RGB_HUI, RGB_HUD, RGB_SAI, RGB_SAD, RGB_VAI, RGB_VAD, _______, _______, _______, RESET, F(2),
          _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
          _______, _______, _______, _______, BL_DEC, BL_TOGG, BL_INC, BL_STEP, _______, _______, _______, _______, _______, _______, _______,
          _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______),
 };
 
 enum function_id {
-    SHIFT_ESC,
-    POINTER_UP,
+  SHIFT_ESC,
+  MOUSE_SLOW,
+  PROGRAM_GLOW
 };
 
 const uint16_t PROGMEM fn_actions[] = {
-  [0]  = ACTION_FUNCTION(SHIFT_ESC),
-  [1] = ACTION_FUNCTION(POINTER_UP)
+  [0] = ACTION_FUNCTION(SHIFT_ESC),
+  [1] = ACTION_FUNCTION(MOUSE_SLOW),
+  [2] = ACTION_FUNCTION(PROGRAM_GLOW)
 };
 
 void action_function(keyrecord_t *record, uint8_t id, uint8_t opt) {
   static uint8_t shift_esc_shift_mask;
-  static report_mouse_t currentReport;
 
   switch (id) {
     case SHIFT_ESC:
@@ -66,18 +67,19 @@ void action_function(keyrecord_t *record, uint8_t id, uint8_t opt) {
         }
       }
       break;
-  case POINTER_UP:
-    currentReport = pointing_device_get_report();
-
+  case MOUSE_SLOW:
     if (record->event.pressed) {
-      if (get_mods()&(MOD_BIT(KC_LSHIFT)|MOD_BIT(KC_RSHIFT))) {
-        /* currentReport.x = 15; */
-        currentReport.y = -15;
+      if (mk_max_speed == MOUSEKEY_MAX_SPEED) {
+        mk_max_speed = MOUSEKEY_MAX_SPEED/2;
       } else {
-        currentReport.y = -50;
+        mk_max_speed = MOUSEKEY_MAX_SPEED;
       }
-      pointing_device_set_report(currentReport);
     }
+    break;
+  case PROGRAM_GLOW:
+    rgblight_enable_noeeprom();
+    rgblight_setrgb(200, 0, 0);
+    reset_keyboard();
     break;
   }
 }

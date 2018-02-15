@@ -267,6 +267,10 @@ void rgblight_enable(void) {
   rgblight_mode(rgblight_config.mode);
 }
 
+void rgblight_enable_noeeprom(void) {
+  rgblight_config.enable = 1;
+}
+
 void rgblight_disable(void) {
   rgblight_config.enable = 0;
   eeconfig_update_rgblight(rgblight_config.raw);

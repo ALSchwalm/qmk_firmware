@@ -17,17 +17,17 @@
 #define RGBLIGHT_H
 
 #ifdef RGBLIGHT_ANIMATIONS
-	#define RGBLIGHT_MODES 34
+#define RGBLIGHT_MODES 34
 #else
-	#define RGBLIGHT_MODES 1
+#define RGBLIGHT_MODES 1
 #endif
 
 #ifndef RGBLIGHT_EFFECT_BREATHE_CENTER
-#define RGBLIGHT_EFFECT_BREATHE_CENTER 1.85  // 1-2.7
+#define RGBLIGHT_EFFECT_BREATHE_CENTER 1.85 // 1-2.7
 #endif
 
 #ifndef RGBLIGHT_EFFECT_BREATHE_MAX
-#define RGBLIGHT_EFFECT_BREATHE_MAX 255   // 0-255
+#define RGBLIGHT_EFFECT_BREATHE_MAX 255 // 0-255
 #endif
 
 #ifndef RGBLIGHT_EFFECT_SNAKE_LENGTH
@@ -64,12 +64,12 @@
 #define RGBLIGHT_VAL_STEP 17
 #endif
 
-#define RGBLED_TIMER_TOP F_CPU/(256*64)
+#define RGBLED_TIMER_TOP F_CPU / (256 * 64)
 // #define RGBLED_TIMER_TOP 0xFF10
 
-#include <stdint.h>
-#include <stdbool.h>
 #include "eeconfig.h"
+#include <stdbool.h>
+#include <stdint.h>
 #ifndef RGBLIGHT_CUSTOM_DRIVER
 #include "ws2812.h"
 #endif
@@ -86,11 +86,11 @@ extern const uint8_t RGBLED_KNIGHT_INTERVALS[3] PROGMEM;
 typedef union {
   uint32_t raw;
   struct {
-    bool     enable  :1;
-    uint8_t  mode    :6;
-    uint16_t hue     :9;
-    uint8_t  sat     :8;
-    uint8_t  val     :8;
+    bool enable : 1;
+    uint8_t mode : 6;
+    uint16_t hue : 9;
+    uint8_t sat : 8;
+    uint8_t val : 8;
   };
 } rgblight_config_t;
 
@@ -99,6 +99,7 @@ void rgblight_increase(void);
 void rgblight_decrease(void);
 void rgblight_toggle(void);
 void rgblight_enable(void);
+void rgblight_enable_noeeprom(void);
 void rgblight_disable(void);
 void rgblight_step(void);
 void rgblight_step_reverse(void);
@@ -129,7 +130,8 @@ void sethsv(uint16_t hue, uint8_t sat, uint8_t val, LED_TYPE *led1);
 void setrgb(uint8_t r, uint8_t g, uint8_t b, LED_TYPE *led1);
 void rgblight_sethsv_noeeprom(uint16_t hue, uint8_t sat, uint8_t val);
 
-#define EZ_RGB(val) rgblight_show_solid_color((val >> 16) & 0xFF, (val >> 8) & 0xFF, val & 0xFF)
+#define EZ_RGB(val)                                                            \
+  rgblight_show_solid_color((val >> 16) & 0xFF, (val >> 8) & 0xFF, val & 0xFF)
 void rgblight_show_solid_color(uint8_t r, uint8_t g, uint8_t b);
 
 void rgblight_task(void);

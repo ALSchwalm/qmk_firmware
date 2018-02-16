@@ -8,6 +8,7 @@ extern keymap_config_t keymap_config;
 
 enum custom_keycodes {
   KC_SESC = SAFE_RANGE,
+  /* KC_ALT_MIN */
 };
 
 #define KC_ KC_TRNS
@@ -27,21 +28,24 @@ enum custom_keycodes {
 #define KC_RVAI RGB_VAI
 #define KC_RVAD RGB_VAD
 #define KC_MO MO
+#define KC_LT1(CODE) LT(1, KC_##CODE)
+#define KC_LT2(CODE) LT(2, KC_##CODE)
+#define KC_LALTK(CODE) LALT_T(KC_##CODE)
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
   KC_KEYMAP(
-  //,----+----+----+----+----+----.              ,----+----+----+----+----+----.
-     SESC, 1  , 2  , 3  , 4  , 5  ,                6  , 7  , 8  , 9  , 0  ,BSPC,
-  //|----+----+----+----+----+----|              |----+----+----+----+----+----|
-     TAB , Q  , W  , E  , R  , T  ,                Y  , U  , I  , O  , P , BSLS,
-  //|----+----+----+----+----+----|              |----+----+----+----+----+----|
-     LCTL, A  , S  , D  , F  , G  ,                H  , J  , K  , L  ,SCLN,QUOT,
-  //|----+----+----+----+----+----+----.    ,----|----+----+----+----+----+----|
-     LSFT, Z  , X  , C  , V  , B  ,MO(1),   MO(2), N  , M  ,COMM,DOT ,SLSH, ENT,
-  //`----+----+----+--+-+----+----+----/     \----+----+----+----+----+----+----'
-                      MO(2),LALT,LGUI,        SPC ,BSPC, MO(1)
-  //                  `----+----+----'        `----+----+----'
+  //,----+----+----+----+----+----.                  ,----+----+----+----+----+----.
+     SESC, 1  , 2  , 3  , 4  , 5  ,                    6  , 7  , 8  , 9  , 0  ,BSPC,
+  //|----+----+----+----+----+----|                  |----+----+----+----+----+----|
+     TAB , Q  , W  , E  , R  , T  ,                    Y  , U  , I  , O  , P , BSLS,
+  //|----+----+----+----+----+----|                  |----+----+----+----+----+----|
+     LCTL, A  , S  , D  , F  , G  ,                    H  , J  , K  , L  ,SCLN,QUOT,
+  //|----+----+----+----+----+----+----.        ,----|----+----+----+----+----+----|
+     LSFT, Z  , X  , C  , V  , B,LT1(LPRN),  LT2(RPRN),N  , M  ,COMM,DOT ,SLSH, ENT,
+  //`----+----+----+--+-+----+----+----/        \----+----+----+----+----+----+----'
+                     MO(2),LALTK(MINS),LGUI,      SPC , EQL, MO(1)
+  //                  `----+----+----'            `----+----+----'
   ),
 
   KC_KEYMAP(
@@ -52,9 +56,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //|----+----+----+----+----+----|              |----+----+----+----+----+----|
          ,    ,    ,    ,    ,    ,                   ,LEFT,DOWN,RIGHT,    ,    ,
   //|----+----+----+----+----+----+----.    ,----|----+----+----+----+----+----|
-         ,    ,    ,    ,    ,    ,    ,     LPRN,    ,    ,    ,    ,    ,    ,
+         ,    ,    ,    ,    ,    ,    ,     LCBR,    ,    ,    ,    ,    ,    ,
   //`----+----+----+--+-+----+----+----/    \----+----+----+----+----+----+----'
-                            ,    ,    ,       LCBR,LBRC,
+                            ,    ,    ,       LBRC,   ,
   //                  `----+----+----'        `----+----+----'
   ),
 
@@ -66,9 +70,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //|----+----+----+----+----+----|              |----+----+----+----+----+----|
          ,    ,    ,    ,    ,    ,                   ,    ,    ,    ,    ,    ,
   //|----+----+----+----+----+----+----.    ,----|----+----+----+----+----+----|
-         ,    ,    ,    ,    ,    ,RPRN,         ,    ,    ,    ,    ,    ,    ,
+         ,    ,    ,    ,    ,    ,RCBR,         ,    ,    ,    ,    ,    ,    ,
   //`----+----+----+--+-+----+----+----/    \----+----+----+----+----+----+----'
-                            ,RBRC,RCBR,           ,    ,
+                            ,    ,RBRC,           ,    ,
   //                  `----+----+----'        `----+----+----'
   ),
 
@@ -86,6 +90,28 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //                  `----+----+----'        `----+----+----'
   ),
 };
+
+/* bool is_hold(keyrecord_t *record) { */
+/*   return (record->tap.count <= 0 || record->tap.interrupted); */
+/* }; */
+
+/* void cadet_function(keyrecord_t *record, uint16_t hold_mod, uint16_t tap_key) { */
+/*   // Generalised space cadet */
+/*   if (record->event.pressed) { */
+/*     if (is_hold(record)) { */
+/*       register_code(hold_mod); */
+/*     } */
+/*   } */
+/*   else { */
+/*     if (is_hold(record)) { */
+/*       unregister_code(hold_mod); */
+/*     } */
+/*     else { */
+/*       register_code(tap_key); */
+/*       unregister_code(tap_key); */
+/*     } */
+/*   } */
+/* }; */
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   static uint8_t shift_esc_shift_mask;
@@ -111,6 +137,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       }
     }
     break;
+  /* case KC_ALT_MIN: */
+  /*   cadet_function(keycode, KC_LALT, KC_MINS); */
+  /*   break; */
   }
   return true;
 }

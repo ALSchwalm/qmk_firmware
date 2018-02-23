@@ -1,6 +1,9 @@
-#include "iris.h"
 #include "action_layer.h"
+#include "action_tapping.h"
+#include "iris.h"
 #include "eeconfig.h"
+#include "timer.h"
+
 
 #define MODS_SHIFT_MASK  (MOD_BIT(KC_LSHIFT)|MOD_BIT(KC_RSHIFT))
 
@@ -91,14 +94,18 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 };
 
 static bool layer_interrupted = false;
+static uint16_t lt_pressed = 0;
 
 // A version of LT that lets you use shifted keys
 bool better_lt(keyrecord_t *record, uint8_t layer, uint16_t keycode) {
   if (record->event.pressed) {
     layer_interrupted = false;
+    lt_pressed = record->event.time;
     layer_on(layer);
   } else {
-    if (!layer_interrupted) {
+    if (!layer_interrupted &&
+        TIMER_DIFF_16(record->event.time, lt_pressed) < TAPPING_TERM) {
+
       if (keycode & MODS_SHIFT_MASK) {
         register_code(KC_LSFT);
       }

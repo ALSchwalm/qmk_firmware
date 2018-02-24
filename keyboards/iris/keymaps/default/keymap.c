@@ -52,9 +52,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
   KC_KEYMAP(
   //,----+----+----+----+----+----.              ,----+----+----+----+----+----.
-     GRV , F1 , F2 , F3 , F4 , F5 ,                F6 , F7 , F8 , F9 ,MINS, EQL,
+     GRV , F1 , F2 , F3 , F4 , F5 ,                F6 , F7 , F8 , F9 , F10, F11,
   //|----+----+----+----+----+----|              |----+----+----+----+----+----|
-          ,   ,    ,    ,    ,    ,                   ,    , UP ,    ,LBRC,RBRC,
+          ,   ,    ,    ,    ,    ,                   ,    , UP ,    ,    , F12,
   //|----+----+----+----+----+----|              |----+----+----+----+----+----|
          ,    ,    ,    ,    ,    ,                   ,LEFT,DOWN,RIGHT,    ,    ,
   //|----+----+----+----+----+----+----.    ,----|----+----+----+----+----+----|
@@ -151,4 +151,12 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     layer_interrupted = true;
   }
   return true;
+}
+
+void matrix_init_user() {
+  DDRD &= ~(1<<5);
+  PORTD &= ~(1<<5);
+
+  DDRB &= ~(1<<0);
+  PORTB &= ~(1<<0);
 }
